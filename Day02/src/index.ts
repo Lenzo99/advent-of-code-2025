@@ -1,21 +1,15 @@
 import { readInput } from "./reader";
-import { isASequenceOfDigitsRepetedTwice } from "./solver";
+import { resolveRangesRepeats, 
+    isASequenceOfDigitsRepeted, 
+    isASequenceOfDigitsRepetedTwice } from "./solver";
 
 let inputFilePath: string = process.argv[2] || "src/input.sample.txt";
 let ranges: string[] = readInput(inputFilePath);
-let password = 0;
+let password1: number = resolveRangesRepeats(ranges, isASequenceOfDigitsRepetedTwice);
+let password2: number = resolveRangesRepeats(ranges, isASequenceOfDigitsRepeted);
 
-for (let range of ranges) {
-    let arrayRange: string[] = range.split("-");
-    let bottomBound = parseInt( arrayRange[0] );
-    let upperBound = parseInt( arrayRange[1] );
-
-    for(let num = bottomBound; num <= upperBound; num++) {
-        let strinNum = ""+num;
-        if ( isASequenceOfDigitsRepetedTwice(strinNum) ) {
-            password += num;
-        }
-    }
-}
-
-console.log(password);
+console.log("");
+console.log("  = = = = = = = = = = ");
+console.log(`  Stupidi elfi. Eseguito con input da "${inputFilePath}".`);
+console.log(`  Soluzione 1 : ${password1}`);
+console.log(`  Soluzione 2 : ${password2}`);
