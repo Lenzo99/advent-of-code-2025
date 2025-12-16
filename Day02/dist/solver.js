@@ -35,15 +35,15 @@ function isASequenceOfDigitsRepeted(stringNumber) {
     let isRepeted = false;
     let stringNumSize = stringNumber.length;
     let possibleSequenceSizes = checkMultiplier(stringNumSize);
-    for (let size of possibleSequenceSizes) {
+    for (let sequenceSize of possibleSequenceSizes) {
         let bottomIndex = 0;
-        let upperIndex = bottomIndex + size;
+        let upperIndex = bottomIndex + sequenceSize;
         let sequences = [];
-        for (; upperIndex <= size; bottomIndex += size, upperIndex += size) {
+        for (; upperIndex <= stringNumSize; bottomIndex += sequenceSize, upperIndex += sequenceSize) {
             let sequence = stringNumber.slice(bottomIndex, upperIndex);
             sequences.push(sequence);
         }
-        isRepeted = sequences.every(el => el === sequences[0]);
+        isRepeted = sequences.every((el) => el === sequences[0]);
         if (isRepeted) {
             break;
         }

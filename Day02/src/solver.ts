@@ -2,15 +2,15 @@ export function resolveRangesRepeats (
         ranges: string[],
         checkRepeats: (stringNumber: string) => boolean
     ): number {
-    let result = 0;
 
+    let result: number = 0;
     for (let range of ranges) {
         let arrayRange: string[] = range.split("-");
-        let bottomBound = parseInt( arrayRange[0] );
-        let upperBound = parseInt( arrayRange[1] );
+        let bottomBound: number = parseInt( arrayRange[0] );
+        let upperBound: number = parseInt( arrayRange[1] );
 
         for(let num = bottomBound; num <= upperBound; num++) {
-            let strinNum = ""+num;
+            let strinNum: string = ""+num;
             if ( checkRepeats(strinNum) ) {
                 result += num;
             }
@@ -20,15 +20,14 @@ export function resolveRangesRepeats (
     return result;
 }
 
-
 export function isASequenceOfDigitsRepetedTwice (stringNumber: string): boolean {
     let isRepeted: boolean = false;
     let isTwicable: boolean = !(stringNumber.length % 2);
     
     if (isTwicable) {
-        let halfLength = stringNumber.length / 2;
-        let firstHalf = stringNumber.slice(0, halfLength);
-        let secondHalf = stringNumber.slice(halfLength);
+        let halfLength: number = stringNumber.length / 2;
+        let firstHalf: string = stringNumber.slice(0, halfLength);
+        let secondHalf: string = stringNumber.slice(halfLength);
         if (firstHalf === secondHalf) {
             isRepeted = true;
         }
@@ -42,17 +41,17 @@ export function isASequenceOfDigitsRepeted (stringNumber: string): boolean {
     let stringNumSize: number = stringNumber.length;
     let possibleSequenceSizes: number[] = checkMultiplier(stringNumSize);
 
-    for (let size of possibleSequenceSizes) {
-        let bottomIndex = 0;
-        let upperIndex = bottomIndex + size;
-        let sequences = [];
+    for (let sequenceSize of possibleSequenceSizes) {
+        let bottomIndex: number = 0;
+        let upperIndex: number = bottomIndex + sequenceSize;
+        let sequences: string[] = [];
 
-        for (; upperIndex <= size; bottomIndex += size, upperIndex += size) {
-            let sequence = stringNumber.slice(bottomIndex, upperIndex);
+        for (; upperIndex <= stringNumSize; bottomIndex += sequenceSize, upperIndex += sequenceSize) {
+            let sequence: string = stringNumber.slice(bottomIndex, upperIndex);
             sequences.push( sequence );
         }
 
-        isRepeted = sequences.every( el => el === sequences[0] );
+        isRepeted = sequences.every( (el: string): boolean => el === sequences[0] )
         if( isRepeted ){
             break;
         }
