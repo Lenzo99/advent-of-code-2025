@@ -1,11 +1,13 @@
 import { readInput } from "./reader";
-import { computeLargestOutuputJoiltageFromBanks } from "./solver";
+import computeJoiltageByBatteries from "./solver";
 
-let inputFilePath: string = process.argv[2] || "src/input.sample.txt";
-let banks: string[] = readInput(inputFilePath);
-let passwordPt1: string = computeLargestOutuputJoiltageFromBanks(banks);
+let inputFile: string = process.argv[2] || "input.sample.txt";
+let inputPath: string = "src/";
+let banks: string[] = readInput( inputPath + inputFile );
+let passwordPt1: string = computeJoiltageByBatteries(banks, 2);
+let passwordPt2: string = computeJoiltageByBatteries(banks, 12);
 
 console.log("");
-console.log("  Day 03. I still hate elves.");
+console.log("  Day 03. I REALLY hate elves.");
 console.log(`  password pt 1: ${passwordPt1}`);
-console.log(`  password pt 2: - `);
+console.log(`  password pt 2: ${passwordPt2}`);
