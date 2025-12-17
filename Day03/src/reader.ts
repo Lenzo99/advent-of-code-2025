@@ -6,5 +6,7 @@ export function readInput (path: string): string[] {
     let banks: string[] = contentNoEmptyOutlines.split("\n");
     let fixedBanks: string[] = banks.map( el => el.replace("\r","") );
 
+   // prova
+
     return fixedBanks;
 }

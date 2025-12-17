@@ -34,9 +34,11 @@ function exctractLargestJoiltage (bank: string, batteriesAmount: number): number
 }
 
 function exctractLargestJoiltageWithTwoBatteries (bank: string): number {
-    let digits: string[] = bank.split("");
+    let digits = bank.split("");
     let digitsAmount: number = digits.length;
     let largestJoltage: number = 0;
+
+    let test = [];
 
     for (let i = 0; i < digitsAmount-1; i++) {
         for (let j = i+1; j < digitsAmount; j++) {
