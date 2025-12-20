@@ -2,23 +2,17 @@ export class InventoryManagementSystem {
     private freshIngredientsIDsRanges: string[] = [];
     private availableIngredientsIDs: number[] = [];
 
-    constructor (ranges: string[], available: string[]) {
-        this.freshIngredientsIDsRanges = ranges;
+    constructor (rangesIDs: string[], availablesIDs: string[]) {
+        this.freshIngredientsIDsRanges = rangesIDs;
+        this.exctractAvailableIngredientsIDs(availablesIDs);
         this.collapseRanges();
-        this.exctractAvailableIngredientsIDs( available );
     }
 
-    private exctractAvailableIngredientsIDs (ids: string[]): void {
-        for (let id of ids) {
-            this.availableIngredientsIDs.push( parseInt(id) );
-        }
-    }
-
-    public countAvailableFreshIDs (): number{
+    public countAvailableFreshIDs (): number {
         let counter = 0;
 
-        for (let ingredientID of this.availableIngredientsIDs) {
-            if( this.isFresh(ingredientID) ) {
+        for (let availablesID of this.availableIngredientsIDs) {
+            if ( this.isFresh(availablesID) ) {
                 counter++;
             }
         }
@@ -26,102 +20,77 @@ export class InventoryManagementSystem {
         return counter;
     }
 
-    private isFresh(ingredientID: number): boolean{
-        let fresh = false;
-        for (let range of this.freshIngredientsIDsRanges) {
-            if( this.isFreshInRange(ingredientID, range) ) {
-                fresh = true;
-                break;
-            }
-        }
-        return fresh;
-    }
-
-    private isFreshInRange(ingredientID: number, range: string): boolean {
-        let fresh = false;
-
-        if (range !== "") {
-            let [ minBoundString, maxBoundString ] = range.split("-");
-            let minBound = parseInt( minBoundString );
-            let maxBound = parseInt( maxBoundString );
-
-            if (ingredientID >= minBound && ingredientID <= maxBound ) {
-                fresh = true;
-            }
-        }
-
-        return fresh;
-    }
-
     public countFreshIDs (): number {
         let counter = 0;
 
         for (let range of this.freshIngredientsIDsRanges) {
-            if (range !== "") {
-                let [ minBoundString, maxBoundString ] = range.split("-");
-                let minBound = parseInt( minBoundString );
-                let maxBound = parseInt( maxBoundString );
-                counter += (maxBound - minBound) + 1;
-            }
+            let [ rangeL, rangeR ] = this.extractRange(range);
+            counter += (rangeR - rangeL) + 1;
         }
 
         return counter;
     }
 
-    private collapseRanges(): void {
+    private exctractAvailableIngredientsIDs(availablesIDs: string[]): void {
+        for (let availablesID of availablesIDs) {
+            let ID = parseInt(availablesID);
+            this.availableIngredientsIDs.push(ID);
+        }
+    }
+
+    private collapseRanges(): void {        
         let ranges = this.freshIngredientsIDsRanges;
-
         for (let i = 0; i < ranges.length-1; i++) {
-
-console.log(ranges);
             let first = ranges[i];
-
-            if (first === "") {
-                continue;
-            }
-
-            let [firstMinString, firstMaxString] = first.split("-");
-            let firstMin = parseInt( firstMinString );
-            let firstMax = parseInt( firstMaxString );
-            let isCollapsed;
+            let [ firstL, firstR ] = this.extractRange(first);
 
             for (let j = i+1; j < ranges.length; j++) {
-                isCollapsed = false;
                 let second = ranges[j];
-                if (second === "") {
-                    continue;
-                }
+                let [ secondL, secondR ] = this.extractRange(second);
 
-                let [secondMinString, secondMaxString] = second.split("-");
-                let secondMin = parseInt( secondMinString );
-                let secondMax = parseInt( secondMaxString );
-
-                if ( !(firstMax < secondMin || firstMin > secondMax) ) {
-                    if (firstMin >= secondMin) {
-                        if (firstMax <= secondMax) {
-                            firstMin = secondMin;
-                            firstMax = secondMax;
-                            isCollapsed = true;
-                        } else {
-                            firstMin = secondMin;
-                            isCollapsed = true;
-                        }
-                    } else {
-                        if (firstMax >= secondMax) {
-                            isCollapsed = true;
-                        } else {
-                            firstMax = secondMax;
-                            isCollapsed = true;
-                        }
-                    }
-
-                    if (isCollapsed) {
-                        ranges[i] = `${firstMin}-${firstMax}`;
-                        ranges[j] = ""
-                        i--;
-                    }
+                if ( this.doTheyOverlap(first, second) ) {
+                    let newL = (firstL < secondL) ? firstL : secondL;
+                    let newR = (firstR > secondR) ? firstR : secondR;
+                    ranges[i] = `${newL}-${newR}`;
+                    first = ranges[i];
+                    firstL = newL;
+                    firstR = newR;
+                    ranges.splice(j, 1);
+                    j=i;
                 }
             }
         }
+    }
+
+    private doTheyOverlap(first: string, second: string): boolean {
+        let overlapped = true;
+        let [ firstL, firstR ] = this.extractRange(first);
+        let [ secondL, secondR ] = this.extractRange(second);
+
+        if (firstL > secondR && firstR > secondR) {
+            overlapped = false;
+        } else if (firstR < secondL && firstR < secondR) {
+            overlapped = false;
+        }
+
+        return overlapped;
+    }
+
+    private extractRange(range: string): number[]{
+        let [ boundL, boundR ] = range.split("-");
+        return [ parseInt(boundL), parseInt(boundR) ];
+    }
+
+    private isFresh (id: number): boolean {
+        let fresh = false;
+
+        for (let range of this.freshIngredientsIDsRanges) {
+            let [ rangeL, rangeR ] = this.extractRange(range);
+            if (id >= rangeL && id <= rangeR) {
+                fresh = true;
+            }
+        }
+
+        return fresh;
     }
 }
